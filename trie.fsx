@@ -102,26 +102,21 @@ let rec exists word trie =
         else false
     
 
-let rec findByPrefix (word) (trie): (Trie list) option =
+let rec findByPrefix (word) (trie): Trie list option =
     if Seq.isEmpty word then
         raise (ArgumentException "No empty string")
 
     match trie with
     | Leaf c ->
-        if Seq.head word = c then
-            if Seq.length word = 1 then
-                Some [trie]
-            else None
-        else None
+        None
     | Node (c, nodeList) ->
          if Seq.head word = c then
             match Seq.length word with
             | 1 -> Some nodeList
             | x ->
-                let f n =
-                    findByPrefix (Seq.tail word) n
-                    // TODO finish
-                List.map f nodeList |> List.choose id |> |> Some
+                match (find (word |> Seq.tail |> Seq.head) nodeList) with
+                | None -> None
+                | Some n -> findByPrefix (Seq.tail word) n
          else None
 
 // TESTS
@@ -152,15 +147,15 @@ assertEqual (create "abc" |> insert "abd" |> exists "abc") true
 assertEqual (create "abc" |> insert "abd" |> exists "abd") true
 
 // findByPrefix
-assertEqual (create "a" |> findByPrefix "a") (Some [Leaf 'a'])
-assertEqual (create "a" |> findByPrefix "ab") None
-assertEqual (create "a" |> findByPrefix "b") None
+assertEqual (create "a" |> findByPrefix "a")    None
+assertEqual (create "a" |> findByPrefix "ab")   None
+assertEqual (create "a" |> findByPrefix "b")    None
+assertEqual (create "ab" |> findByPrefix "b")   None
+assertEqual (create "abc" |> findByPrefix "b")  None
 
-assertEqual (create "ab" |> findByPrefix "a") (Some [Leaf 'b'])
-assertEqual (create "ab" |> findByPrefix "b") None
+assertEqual (create "ab" |> findByPrefix "a")                                                       (Some <| [Leaf 'b'])
+assertEqual (create "ab" |> insert "ad" |> findByPrefix "a")                                        (Some <| [Leaf 'b'; Leaf 'd'])
+assertEqual (create "abc" |> insert "abd" |> findByPrefix "ab")                                     (Some <| [Leaf 'c'; Leaf 'd'])
+assertEqual (create "abc" |> insert "abd" |> insert "ace" |> insert "acf" |> findByPrefix "ab")     (Some <| [Leaf 'c'; Leaf 'd'])
+assertEqual (create "abc" |> insert "abd" |> insert "ace" |> insert "acf" |> findByPrefix "ac")     (Some <| [Leaf 'e'; Leaf 'f'])
 
-l "CRASH HERE"
-assertEqual (create "ab" |> findByPrefix "ab") None
-
-assertEqual (create "abc" |> findByPrefix "ab") (Some [Leaf 'c'])
-assertEqual (create "ab" |> insert "ad" |> findByPrefix "a") (Some [Leaf 'b'; Leaf 'd'])
