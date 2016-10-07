@@ -8,8 +8,6 @@ let assertEqual lhs rhs =
 let l x = printfn "%A" x
 // UTILITY
 
-
-
 open System
 
 type Trie =
@@ -98,9 +96,9 @@ let rec exists word trie =
                 match (find (word |> Seq.tail |> Seq.head) nodeList) with
                 | None -> false
                 | Some(n) -> exists (Seq.tail word) n
-                
+
         else false
-    
+
 
 let rec findByPrefix (word) (trie): Trie list option =
     if Seq.isEmpty word then
@@ -118,6 +116,24 @@ let rec findByPrefix (word) (trie): Trie list option =
                 | None -> None
                 | Some n -> findByPrefix (Seq.tail word) n
          else None
+
+
+let strings trie =
+    let mutable results = [||]
+    let leafFn s =
+        results <- Array.append [|s|] results
+        ()
+
+    let rec internalFn acc (trie) =
+        match trie with
+        | Leaf c -> leafFn (acc + c.ToString())
+        | Node (c,nodeList) ->
+            List.iter (internalFn <| acc + c.ToString()) nodeList
+
+    internalFn "" trie
+    results |> Array.toList
+
+
 
 // TESTS
 // create
@@ -159,3 +175,17 @@ assertEqual (create "abc" |> insert "abd" |> findByPrefix "ab")                 
 assertEqual (create "abc" |> insert "abd" |> insert "ace" |> insert "acf" |> findByPrefix "ab")     (Some <| [Leaf 'c'; Leaf 'd'])
 assertEqual (create "abc" |> insert "abd" |> insert "ace" |> insert "acf" |> findByPrefix "ac")     (Some <| [Leaf 'e'; Leaf 'f'])
 
+// strings
+assertEqual (create "abc" |> strings) ["abc"]
+assertEqual (create "abc" |> insert "abd" |> insert "ace" |> insert "acf" |> strings) ["acf"; "ace"; "abd"; "abc"]
+
+
+
+create "abcdefgh"
+|> insert "abd"
+|> insert "ace"
+|> insert "acf"
+|> findByPrefix "ab"
+|> Option.get
+|> List.collect strings
+|> l
