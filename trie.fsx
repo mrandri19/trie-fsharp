@@ -106,7 +106,9 @@ let rec findByPrefix (word) (trie): Trie list option =
 
     match trie with
     | Leaf c ->
-        None
+        if Seq.head word = c && (Seq.length word = 1) then
+            [Leaf c] |> Some
+        else None
     | Node (c, nodeList) ->
          if Seq.head word = c then
             match Seq.length word with
@@ -163,7 +165,7 @@ assertEqual (create "abc" |> insert "abd" |> exists "abc") true
 assertEqual (create "abc" |> insert "abd" |> exists "abd") true
 
 // findByPrefix
-assertEqual (create "a" |> findByPrefix "a")    None
+assertEqual (create "a" |> findByPrefix "a")    (Some [Leaf 'a'])
 assertEqual (create "a" |> findByPrefix "ab")   None
 assertEqual (create "a" |> findByPrefix "b")    None
 assertEqual (create "ab" |> findByPrefix "b")   None
@@ -188,4 +190,5 @@ create "abcdefgh"
 |> findByPrefix "ab"
 |> Option.get
 |> List.collect strings
+|> List.map ((+) "ab")
 |> l
