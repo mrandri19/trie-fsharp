@@ -126,9 +126,9 @@ let rec findByPrefix (word) (trie): Trie list option =
 
 
 let strings trie =
-    let mutable results = [||]
+    let mutable results = new ResizeArray<string>()
     let leafFn s =
-        results <- Array.append [|s|] results
+        results.Add s
         ()
 
     let rec internalFn acc (trie) =
@@ -140,7 +140,7 @@ let strings trie =
             List.iter (internalFn <| acc + c.ToString()) nodeList
 
     internalFn "" trie
-    results |> Array.toList
+    results.ToArray() |> Array.toList
 
 
 
@@ -186,7 +186,7 @@ assertEqual (create "abc" |> insert "abd" |> insert "ace" |> insert "acf" |> fin
 
 // strings
 assertEqual (create "abc" |> strings) ["abc"]
-assertEqual (create "a" |> insert "ab" |> insert "abc" |> insert "abd" |> insert "ace" |> insert "acf" |> strings) ["acf"; "ace"; "abd"; "abc"; "ab"; "a";]
+assertEqual (create "a" |> insert "ab" |> insert "abc" |> insert "abd" |> insert "ace" |> insert "acf" |> strings) ["a"; "ab"; "abc"; "abd"; "ace"; "acf";]
 
 let dictionary = ["ab"; "abc"; "ac"; "abd"] in
     let trie = List.fold (fun trie word -> insert word trie) (create "a") dictionary in

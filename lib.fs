@@ -129,9 +129,9 @@ module trie =
 
 
     let strings trie =
-        let mutable results = [||]
+        let mutable results = new ResizeArray<string>()
         let leafFn s =
-            results <- Array.append [|s|] results
+            results.Add s
             ()
 
         let rec internalFn acc (trie) =
@@ -143,7 +143,7 @@ module trie =
                 List.iter (internalFn <| acc + c.ToString()) nodeList
 
         internalFn "" trie
-        results |> Array.toList
+        results.ToArray() |> Array.toList
 
 
 
