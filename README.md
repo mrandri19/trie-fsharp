@@ -13,22 +13,21 @@ Currently supports only words starting with the same letter. `:(`
 These were performed with the file `bench.fsx` using and Intel i3570k CPU and 8GB 1660MHz on `Linux 4.7.6-1-ARCH x86_64`
 ```
 Prepend '/' to all words we'll insert so they can all start with a different letter
-
 Fill the trie with 68k words
-Real: 00:00:02.790, CPU: 00:00:02.790, GC gen0: 348, gen1: 0
+Real: 00:00:02.783, CPU: 00:00:02.770, GC gen0: 348, gen1: 0
 
 Use `findByPrefix "/abi" fullTrie` 10^5 times
-Real: 00:00:00.321, CPU: 00:00:00.323, GC gen0: 56, gen1: 0
+Real: 00:00:00.316, CPU: 00:00:00.316, GC gen0: 56, gen1: 0
 
 Use `findByPrefix "/" fullTrie` 10^5 times
-Real: 00:00:00.014, CPU: 00:00:00.016, GC gen0: 2, gen1: 0
+Real: 00:00:00.013, CPU: 00:00:00.016, GC gen0: 2, gen1: 0
 
-List.map strings (findByPrefix "/")
-Real: 00:00:02.090, CPU: 00:00:02.300, GC gen0: 18, gen1: 51
+List.map strings (findByPrefix "/") 10^1 times
+Real: 00:00:00.618, CPU: 00:00:00.626, GC gen0: 59, gen1: 2
 
-List.map strings (findByPrefix "/a")
-Real: 00:00:00.017, CPU: 00:00:00.016, GC gen0: 4, gen1: 0
+List.map strings (findByPrefix "/a") 10^2 times
+Real: 00:00:00.624, CPU: 00:00:00.633, GC gen0: 63, gen1: 2
 
-List.map strings (findByPrefix "/ab")
-Real: 00:00:00.000, CPU: 00:00:00.000, GC gen0: 0, gen1: 0
+List.map strings (findByPrefix "/ab") 10^3 times
+Real: 00:00:00.261, CPU: 00:00:00.260, GC gen0: 35, gen1: 0
 ```

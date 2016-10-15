@@ -1,6 +1,6 @@
 namespace AndreaCognolato
 
-module trie =
+module Trie =
     // UTILITY
     let assertEqual lhs rhs =
         if lhs <> rhs then

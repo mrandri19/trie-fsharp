@@ -33,24 +33,27 @@ for i in 1..(pown 10 5) do
 
 newline()
 
-printfn """List.map strings (findByPrefix "/")"""
+printfn """List.map strings (findByPrefix "/") 10^1 times"""
 let t1 = findByPrefix "/" fullTrie |> Option.get
 #time
-List.map strings t1
+for i in 1..(pown 10 1) do
+    List.map strings t1 |> ignore
 #time
 
 newline()
 
-printfn """List.map strings (findByPrefix "/a")"""
+printfn """List.map strings (findByPrefix "/a") 10^2 times"""
 let t2 = findByPrefix "/a" fullTrie |> Option.get
 #time
-List.map strings t2
+for i in 1..(pown 10 2) do
+    List.map strings t2 |> ignore
 #time
 
 newline()
 
-printfn """List.map strings (findByPrefix "/ab")"""
+printfn """List.map strings (findByPrefix "/ab") 10^3 times"""
 let t3 = findByPrefix "/ab" fullTrie |> Option.get
 #time
-List.map strings t3
+for i in 1..(pown 10 3) do
+    List.map strings t3 |> ignore
 #time
