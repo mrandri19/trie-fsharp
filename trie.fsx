@@ -126,7 +126,7 @@ let rec findByPrefix (word) (trie): Trie list option =
 
 
 let strings trie =
-    let mutable results = new ResizeArray<string>()
+    let results = new ResizeArray<string>()
     let leafFn s =
         results.Add s
         ()
