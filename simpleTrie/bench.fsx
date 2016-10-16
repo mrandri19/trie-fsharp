@@ -4,7 +4,7 @@ open AndreaCognolato.trie
 
 open System
 let newline() = printfn "" 
-let words =  IO.File.ReadAllLines @"../crawler_latino/collatedWords.txt"
+let words =  IO.File.ReadAllLines @"collatedWords.txt"
 
 printfn "Prepend '/' to all words we'll insert so they can all start with a different letter"
 let finalwords = Array.map ((+) "/") words
